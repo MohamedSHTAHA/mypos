@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" type="text/css" href="/style.css">
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>
+
+</head>
+<body>
+
+<h2>Chat Messages</h2>
+
+<div class="container darker">
+  <p>Hey! I'm fine. Thanks for asking!</p>
+  <span class="time-left">11:01</span>
+</div>
+
+<div class="container">
+  <p>Sweet! So, what do you wanna do today?</p>
+  <span class="time-right">11:02</span>
+</div>
+<div  id="boradcast">
+  
+</div>
+<div  id="chat">
+  
+ 
+</div>
+<hr /> 
+Username: <input  class="container" type="text" id="username"> <br>
+ <textarea class="container" id="message" placeholder="message"></textarea>
+ <button id="send">Send </button>
+<script type="text/javascript" src="/client.js"></script>
+
+</body>
+</html>

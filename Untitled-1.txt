@@ -1,0 +1,298 @@
+<?php	
+echo form_open_multipart(base_url() . 'dashboard/returned_purchases');
+?>
+<div class="col-xs-8 no-padding">
+    <div class="panel panel-bd lobidisable lobipanel lobipanel-sortable ">
+        <div class="panel-heading">
+            <h3 class="panel-title"><?php echo $title ?> </h3>
+        </div>
+        <div class="panel-body">
+            
+            <div class="col-xs-12 col-sm-12 col-md-12 m-b-20 no-padding">
+            <div class="col-md-5">
+                <div class="form-group">
+                    <i class="fa fa-users"></i>
+                    <label class="control-label"> الموردين  </label>
+                    <select name="supplier_code" id="supplier_code" class="form-control selectpicker" data-live-search="true" aria-required="true" data-validation="required">
+                        <option value="" selected="">--قم بإختيار إسم المورد--</option>
+                        <?php 
+                        if (isset($suppliers) && $suppliers != null){
+                            foreach ($suppliers as $supplier) {
+                                ?>
+                                <option value="<?=$supplier->code?>"><?=$supplier->name?></option>
+                                <?php      
+                            }
+                        }
+                        ?>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-5">
+                <div class="form-group">
+                    <label class="control-label">إسم الفرع</label>
+                    <!--------------------->
+                    <select onchange="GetDiv_alldata()" class="form-control" name="branch_id" id="branch_id"  >
+                        <option> - اختر - </option>
+                        <?php if (!empty($branches)):?>
+                            <?php  foreach ($branches as $record):?>
+                                <option value="<?php  echo $record->id;?>"><?php  echo $record->title;?></option>
+                            <?php  endforeach;?>
+                        <?php endif;?>
+
+                    </select>
+
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label class="control-label"></label>
+                    <input type="submit" value="حفظ" name="save" class="form-control btn btn-info" />
+                </div>
+            </div>
+                    
+          
+                <div class="tab-content col-xs-12 col-sm-12 padding-4">
+
+                    <div class="col-xs-12  " style="width:100%;overflow-x: scroll;" >
+                            
+                            <table id="all_data" class="table table-striped table-bordered dt-responsive nowrap " cellspacing="0" width="100%">
+                                <thead>
+                                    <tr class="greentd">
+                                        <th class="text-center">م</th>
+                                        <th class="text-center">كود الصنف</th>
+                                        <th class="text-center">اسم الصنف</th>
+                                        <th class="text-center">الفرع</th>
+                                        <th class="text-center">رصيد اول مده</th>
+                                        <th class="text-center">المشتريات</th>
+                                        <th class="text-center">المبيعات</th>
+                                        <th class="text-center">الكمية </th>
+                                        <th class="text-center">الكمية المرتجعة </th>
+                                        
+                                       
+                                     
+                                    </tr>
+                                </thead>
+                                <tbody class="text-center">
+                                   
+                                </tbody>
+                            </table>
+                        </div>
+                
+                
+                
+                
+                </div>
+
+            </div>
+
+        </div>
+        <br />
+        <br />
+
+
+
+    </div>
+</div>
+
+
+<div class="col-xs-4 no-padding">
+    <div class="panel panel-bd lobidisable lobipanel lobipanel-sortable ">
+        <div class="panel-heading">
+            <h3 class="panel-title"> الاصناف المرتجعة </h3>
+        </div>
+        <div class="panel-body">
+            
+                <div class="tab-content col-xs-12 col-sm-12 padding-4">
+
+                    <div class="col-xs-12  " style="width:100%;overflow-x: scroll;" >
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label class="control-label">السعر الكلى </label>
+                                    <input type="text" id="total_price" readonly value="" name="total_price" class="form-control" />
+                                </div>
+                            </div>
+                            <table id="listitems" class="table table-striped table-bordered dt-responsive nowrap " cellspacing="0" width="100%">
+                                <thead>
+                                    <tr class="greentd">
+                                        <!--<th class="text-center">م</th>-->
+                                        <th class="text-center">كود الصنف</th>
+                                        <th class="text-center">اسم الصنف</th>
+                                        <th class="text-center">الكمية المتاحة</th>
+                                        <th class="text-center">السعر</th>
+                                        <th class="text-center">الكمية </th>
+                                        <th class="text-center">السعر الكلى </th>
+                                        <th class="text-center">حذف</th>
+                                        
+                                        
+                                       
+                                     
+                                    </tr>
+                                </thead>
+                                <tbody class="text-center">
+                                   
+                                </tbody>
+                            </table>
+                        </div>
+                
+                
+                
+                
+                </div>
+
+            </div>
+            
+        </div>
+        <br />
+        <br />
+
+
+
+    </div>
+</div>
+
+<?php echo form_close(); ?>
+
+
+<script>
+
+    function GetDiv_alldata() {
+        $('#listitems  > tbody').empty();
+        $('#total_price').val('');
+        branch_id = $('#branch_id').val(); 
+        
+        
+        url = '<?php echo base_url(); ?>Dashboard/get_items_branch_ajax/' + branch_id;
+        
+        var oTable_usergroup = $('#all_data').DataTable({
+            dom: 'Bfrtip',
+            paging: false,
+            "ajax": {
+                "url": url,
+                "dataSrc": function(json) {
+                   
+                    return json.data;
+                }
+            },
+
+
+            aoColumns: [
+                        
+                {
+                    "bSortable": true
+                },
+                {
+                    "bSortable": true
+                },
+                {
+                    "bSortable": true
+                },
+                {
+                    "bSortable": true
+                },
+                {
+                    "bSortable": true
+                },
+                {
+                    "bSortable": true
+                },
+                {
+                    "bSortable": true
+                },
+                {
+                    "bSortable": true
+                },
+                {
+                    "bSortable": true
+                },
+             
+            ],
+
+            buttons: [
+                //'pageLength',
+                'copy',
+                'excelHtml5',
+                {
+                    extend: "pdfHtml5",
+                    orientation: 'landscape'
+                },
+                {
+                    extend: 'print',
+                    exportOptions: {
+                        columns: ':visible'
+                    },
+                    orientation: 'landscape'
+                },
+                'colvis'
+            ],
+
+            colReorder: true,
+            destroy: true
+
+        });
+    }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+function addtolist(th){
+    //alert($(th).attr("data-id"));
+    $(th).attr("disabled", "disabled");
+    $(th).addClass('btn-danger').removeClass('btn-info');
+    $('#listitems').append(`<tr>
+                                <td>${$(th).attr("data-sanf_code")}</td>
+                                <td>${$(th).attr("data-sanf_name")}</td>
+                                <td>${$(th).attr("data-total")}</td>
+                                <td>${$(th).attr("data-price")}</td>
+                                <td><input data-price="${$(th).attr('data-price')}"  onchange="gettotalprice();$('#amount_price_${$(th).attr("data-sanf_code")}').html(${$(th).attr("data-price")}*$(this).val())" type="number" name="amount[]" value="1" min="1" max="${$(th).attr('data-total')}"/><input type="hidden" name="sanf_code[]" value="${$(th).attr('data-sanf_code')}" /><input type="hidden" name="price[]" value="${$(th).attr('data-price')}" /></td>
+                                <td id="amount_price_${$(th).attr('data-sanf_code')}">${$(th).attr("data-price")}</td>
+                                <td><a class="btn" data-sanf_code="${$(th).attr('data-sanf_code')}" onclick="removefromlist(this)"><i class="fa fa-trash"></i></a></td>
+                            </tr>`);
+
+}
+function removefromlist(th){
+    $(th).closest('tr').remove();
+    $("#item_"+$(th).attr("data-sanf_code")).removeAttr("disabled");
+    $("#item_"+$(th).attr("data-sanf_code")).removeClass('btn-danger').addClass('btn-info');
+    
+
+}
+
+function gettotalprice(){
+    var  totalprice = 0; 
+    $.each($('input[name="amount[]"]'),function(){
+      totalprice +=parseFloat($(this).val())*parseFloat($(this).attr("data-price");
+    });
+    alert(totalprice);
+}
+
+</script>
+
+<script>
+    /*function allitems(){
+       
+        var branch_id=   $('#branch_id').val();
+        if(branch_id != ''){
+            var dataString = 'branch_id=' + branch_id;
+            $.ajax({
+                type:'post',
+                url: '<?php echo base_url() ?>Dashboard/returned_purchases/',
+                data:dataString,
+                dataType: 'html',
+                cache:false,
+                success: function(html){
+                    $("#optionearea1").html(html);
+                }
+            });
+        }
+    }*/
+</script>
